@@ -45,7 +45,7 @@
             </form>
           </div>
           <div class="col col-subtotal">
-            {{ item.quantity|int|mul:item.product.price_cents|brl }}
+            {{ item.quantity|mul:item.product.price_cents|brl }}
           </div>
           <div class="col col-actions">
             <form
