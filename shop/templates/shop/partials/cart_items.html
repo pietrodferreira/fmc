@@ -1,0 +1,26 @@
+{% load money %}
+{% include "shop/partials/cart_items_fragment.html" %}
+
+<div id="cart-summary" hx-swap-oob="true">
+  {% include "shop/partials/cart_summary.html" %}
+</div>
+
+<div id="cart-aside" hx-swap-oob="true">
+  <div class="aside-card">
+    <div class="aside-total-row">
+      <div class="aside-total-label">Total</div>
+      <div class="aside-total-value">{{ cart_total_price_cents|default:0|brl }}</div>
+    </div>
+
+    {% if cart_items_count|default:0|int > 0 %}
+      <a class="btn btn-primary" href="{% url 'checkout' %}">Finalizar pedido</a>
+    {% else %}
+      <a class="btn btn-primary btn-disabled" href="{% url 'catalog' %}">Adicione itens</a>
+    {% endif %}
+
+    <div class="aside-help">
+      A entrega é calculada com base no endereço informado no checkout.
+    </div>
+  </div>
+</div>
+

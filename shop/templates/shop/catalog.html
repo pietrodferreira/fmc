@@ -1,0 +1,59 @@
+{% extends "shop/base.html" %}
+{% load money %}
+
+{% block title %}Catálogo | FMC{% endblock %}
+
+{% block content %}
+  <section class="page-head">
+    <div>
+      <h1>Materiais de Construção</h1>
+      <p>Compras rápidas para entrega em <strong>Paulistana</strong>.</p>
+    </div>
+  </section>
+
+  <section class="product-grid">
+    {% for product in products %}
+      <article class="product-card">
+        <a class="product-link" href="{% url 'product_detail' product.id %}">
+          <div class="product-thumb" aria-hidden="true"></div>
+          <div class="product-meta">
+            <div class="product-category">
+              {{ product.category.name|default:"Geral" }}
+            </div>
+            <h2 class="product-title">{{ product.name }}</h2>
+            {% if product.description %}
+              <p class="product-desc">{{ product.description|truncatewords:24 }}</p>
+            {% endif %}
+          </div>
+        </a>
+
+        <div class="product-footer">
+          <div class="price">
+            <span class="price-value">{{ product.price_cents|brl }}</span>
+            <span class="price-unit">/ {{ product.unit }}</span>
+          </div>
+
+          <form
+            method="post"
+            action="{% url 'cart_add' %}"
+            hx-post="{% url 'cart_add' %}"
+            hx-target="#cart-summary"
+            hx-swap="innerHTML"
+            class="add-form"
+          >
+            {% csrf_token %}
+            <input type="hidden" name="product_id" value="{{ product.id }}" />
+            <label class="field">
+              <span class="field-label">Qtd</span>
+              <input class="qty-input" type="number" min="1" step="1" name="quantity" value="1" />
+            </label>
+            <button class="btn btn-primary" type="submit">Adicionar</button>
+          </form>
+        </div>
+      </article>
+    {% empty %}
+      <p>Sem produtos cadastrados.</p>
+    {% endfor %}
+  </section>
+{% endblock %}
+

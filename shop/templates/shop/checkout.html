@@ -1,0 +1,111 @@
+{% extends "shop/base.html" %}
+{% load money %}
+
+{% block title %}Entrega | FMC{% endblock %}
+
+{% block content %}
+  <section class="page-head">
+    <div>
+      <h1>Entrega</h1>
+      <p>Informe o endereço para a entrega em <strong>Paulistana</strong>.</p>
+    </div>
+  </section>
+
+  <div class="checkout-grid">
+    <section class="card">
+      <h2 class="card-title">Seu pedido</h2>
+
+      {% if items %}
+        <div class="checkout-lines">
+          {% for item in items %}
+            <div class="checkout-line">
+              <div class="checkout-line-name">
+                {{ item.product.name }}
+                <span class="muted">x {{ item.quantity }}</span>
+              </div>
+              <div class="checkout-line-price">
+                {{ item.quantity|int|mul:item.product.price_cents|brl }}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="checkout-total">
+          <div class="checkout-total-label">Total</div>
+          <div class="checkout-total-value">{{ cart_total_price_cents|default:0|brl }}</div>
+        </div>
+      {% else %}
+        <div class="muted">Carrinho vazio.</div>
+      {% endif %}
+    </section>
+
+    <section class="card" id="checkout-form">
+      <h2 class="card-title">Endereço de entrega</h2>
+
+      <div id="checkout-result"></div>
+
+      <form
+        method="post"
+        action="{% url 'checkout_place' %}"
+        hx-post="{% url 'checkout_place' %}"
+        hx-target="#checkout-result"
+        hx-swap="innerHTML"
+        class="form"
+      >
+        {% csrf_token %}
+
+        <div class="fields">
+          <label class="field">
+            <span class="field-label">Nome completo</span>
+            <input class="input" name="full_name" type="text" required />
+          </label>
+
+          <label class="field">
+            <span class="field-label">Telefone</span>
+            <input class="input" name="phone" type="tel" required placeholder="(DDD) 99999-9999" />
+          </label>
+
+          <label class="field">
+            <span class="field-label">CEP</span>
+            <input class="input" name="postcode" type="text" required placeholder="CEP" />
+          </label>
+
+          <label class="field">
+            <span class="field-label">Cidade</span>
+            <input class="input" name="city" type="text" value="Paulistana" required />
+          </label>
+
+          <label class="field">
+            <span class="field-label">Bairro</span>
+            <input class="input" name="district" type="text" required />
+          </label>
+
+          <label class="field">
+            <span class="field-label">Rua</span>
+            <input class="input" name="street" type="text" required />
+          </label>
+
+          <label class="field">
+            <span class="field-label">Número</span>
+            <input class="input" name="number" type="text" required />
+          </label>
+
+          <label class="field">
+            <span class="field-label">Referência (opcional)</span>
+            <input class="input" name="reference" type="text" placeholder="Ponto de referência" />
+          </label>
+
+          <label class="field">
+            <span class="field-label">Observações (opcional)</span>
+            <textarea class="input textarea" name="notes" rows="3" placeholder="Entregas, preferências..."></textarea>
+          </label>
+        </div>
+
+        <button class="btn btn-primary btn-block" type="submit">
+          Confirmar pedido
+        </button>
+      </form>
+    </section>
+  </div>
+{% endblock %}
+

@@ -1,0 +1,22 @@
+{% load money %}
+{% if ok %}
+  <div class="result ok">
+    <div class="result-title">Pedido confirmado</div>
+    <div class="result-text">
+      Número do pedido: <strong>{{ order.order_number }}</strong>
+    </div>
+    <div class="result-text">
+      Total: <strong>{{ cart_total_price_cents|default:0|brl }}</strong>
+    </div>
+
+    <div class="result-actions">
+      <a class="btn btn-primary" href="{% url 'catalog' %}">Fazer novo pedido</a>
+    </div>
+  </div>
+{% else %}
+  <div class="result error">
+    <div class="result-title">Não foi possível confirmar</div>
+    <div class="result-text">Revise os dados de entrega e tente novamente.</div>
+  </div>
+{% endif %}
+

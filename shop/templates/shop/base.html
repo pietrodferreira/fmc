@@ -1,0 +1,71 @@
+{% load static %}
+{% load money %}
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}FMC - Ferreira Materiais de Construção{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'shop/styles.css' %}" />
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <script>
+      function getCookie(name) {
+        if (!document.cookie) return null;
+        const cookies = document.cookie.split(";").map(c => c.trim());
+        for (const c of cookies) {
+          if (c.startsWith(name + "=")) return decodeURIComponent(c.substring(name.length + 1));
+        }
+        return null;
+      }
+
+      document.body.addEventListener("htmx:configRequest", function (evt) {
+        const token = getCookie("csrftoken");
+        if (token) {
+          evt.detail.headers["X-CSRFToken"] = token;
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="{% url 'catalog' %}">
+          <span class="brand-mark">FMC</span>
+          <span class="brand-text">
+            Ferreira Materiais de Construção
+            <span class="brand-sub">Paulistana</span>
+          </span>
+        </a>
+
+        <nav class="nav">
+          <a class="nav-link" href="{% url 'catalog' %}">Catálogo</a>
+          <a class="nav-link" href="{% url 'cart' %}">
+            Carrinho
+            <span class="badge" aria-label="Itens no carrinho">
+              {{ cart_items_count|default:0 }}
+            </span>
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      {% if messages %}
+        <section class="messages" role="status" aria-live="polite">
+          {% for message in messages %}
+            <div class="message message-{{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+        </section>
+      {% endif %}
+
+      <div id="cart-summary" class="cart-summary" aria-live="polite">
+        {% include "shop/partials/cart_summary.html" %}
+      </div>
+
+      {% block content %}{% endblock %}
+    </main>
+
+    <script src="{% static 'shop/app.js' %}"></script>
+  </body>
+</html>
+

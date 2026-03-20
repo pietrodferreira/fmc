@@ -1,0 +1,58 @@
+{% extends "shop/base.html" %}
+{% load money %}
+
+{% block title %}{{ product.name }} | FMC{% endblock %}
+
+{% block content %}
+  <section class="detail">
+    <a class="text-link" href="{% url 'catalog' %}">← Voltar</a>
+
+    <div class="detail-grid">
+      <div class="detail-left">
+        <div class="product-hero" aria-hidden="true"></div>
+      </div>
+      <div class="detail-right">
+        <div class="detail-category">{{ product.category.name|default:"Geral" }}</div>
+        <h1 class="detail-title">{{ product.name }}</h1>
+        {% if product.description %}
+          <p class="detail-desc">{{ product.description }}</p>
+        {% endif %}
+
+        <div class="detail-price">
+          <span class="price-value">{{ product.price_cents|brl }}</span>
+          <span class="price-unit">/ {{ product.unit }}</span>
+        </div>
+
+        {% if product.stock_qty and product.stock_qty > 0 %}
+          <div class="muted">Estoque: {{ product.stock_qty }}</div>
+        {% else %}
+          <div class="muted">Sob consulta</div>
+        {% endif %}
+
+        <form
+          method="post"
+          action="{% url 'cart_add' %}"
+          hx-post="{% url 'cart_add' %}"
+          hx-target="#cart-summary"
+          hx-swap="innerHTML"
+          class="detail-add"
+        >
+          {% csrf_token %}
+          <input type="hidden" name="product_id" value="{{ product.id }}" />
+
+          <label class="field">
+            <span class="field-label">Quantidade</span>
+            <input class="qty-input qty-input-lg" type="number" min="1" step="1" name="quantity" value="1" />
+          </label>
+
+          <button class="btn btn-primary" type="submit">Adicionar ao carrinho</button>
+        </form>
+
+        <div class="help">
+          Após adicionar, finalize no carrinho informando o endereço de entrega em <strong>Paulistana</strong>.
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+

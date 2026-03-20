@@ -1,0 +1,23 @@
+{% load money %}
+<div class="summary-inner">
+  {% if cart_items_count|default:0|length > 0 %}
+    <div class="summary-row">
+      <div class="summary-label">Itens</div>
+      <div class="summary-value">{{ cart_items_count }}</div>
+    </div>
+    <div class="summary-row">
+      <div class="summary-label">Total</div>
+      <div class="summary-value">{{ cart_total_price_cents|default:0|brl }}</div>
+    </div>
+    <div class="summary-actions">
+      <a class="btn btn-ghost btn-sm" href="{% url 'cart' %}">Ver carrinho</a>
+      <a class="btn btn-primary btn-sm" href="{% url 'checkout' %}">Finalizar</a>
+    </div>
+  {% else %}
+    <div class="summary-empty">Carrinho vazio.</div>
+    <div class="summary-actions">
+      <a class="btn btn-ghost btn-sm" href="{% url 'catalog' %}">Ir ao catálogo</a>
+    </div>
+  {% endif %}
+</div>
+

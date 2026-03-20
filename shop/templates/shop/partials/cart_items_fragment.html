@@ -1,0 +1,73 @@
+{% load money %}
+{% if items %}
+  <div class="cart-items-inner">
+    <div class="cart-table">
+      <div class="cart-row cart-head">
+        <div class="col col-name">Produto</div>
+        <div class="col col-unit">Valor</div>
+        <div class="col col-qty">Qtd</div>
+        <div class="col col-subtotal">Subtotal</div>
+        <div class="col col-actions">Ações</div>
+      </div>
+
+      {% for item in items %}
+        <div class="cart-row">
+          <div class="col col-name">
+            <div class="item-name">{{ item.product.name }}</div>
+            {% if item.product.category %}
+              <div class="item-meta">{{ item.product.category.name }}</div>
+            {% endif %}
+          </div>
+          <div class="col col-unit">
+            {{ item.product.price_cents|brl }}/{{ item.product.unit }}
+          </div>
+          <div class="col col-qty">
+            <form
+              method="post"
+              action="{% url 'cart_update' %}"
+              hx-post="{% url 'cart_update' %}"
+              hx-target="#cart-items"
+              hx-swap="innerHTML"
+              class="inline-form"
+            >
+              {% csrf_token %}
+              <input type="hidden" name="product_id" value="{{ item.product.id }}" />
+              <input
+                class="qty-input qty-inline"
+                type="number"
+                min="0"
+                step="1"
+                name="quantity"
+                value="{{ item.quantity }}"
+                aria-label="Quantidade de {{ item.product.name }}"
+              />
+              <button class="btn btn-ghost btn-sm" type="submit">Salvar</button>
+            </form>
+          </div>
+          <div class="col col-subtotal">
+            {{ item.quantity|int|mul:item.product.price_cents|brl }}
+          </div>
+          <div class="col col-actions">
+            <form
+              method="post"
+              action="{% url 'cart_remove' %}"
+              hx-post="{% url 'cart_remove' %}"
+              hx-target="#cart-items"
+              hx-swap="innerHTML"
+            >
+              {% csrf_token %}
+              <input type="hidden" name="product_id" value="{{ item.product.id }}" />
+              <button class="btn btn-ghost btn-sm danger" type="submit">Remover</button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% else %}
+  <div class="empty-state">
+    <div class="empty-title">Seu carrinho está vazio.</div>
+    <a class="btn btn-primary" href="{% url 'catalog' %}">Ver catálogo</a>
+  </div>
+{% endif %}
+

@@ -1,0 +1,39 @@
+{% extends "shop/base.html" %}
+{% load money %}
+
+{% block title %}Carrinho | FMC{% endblock %}
+
+{% block content %}
+  <section class="page-head">
+    <div>
+      <h1>Carrinho</h1>
+      <p>Revise quantidades e finalize com seu endereço de entrega.</p>
+    </div>
+  </section>
+
+  <section class="cart-layout">
+    <div id="cart-items" class="cart-items">
+      {% include "shop/partials/cart_items_fragment.html" %}
+    </div>
+
+    <aside id="cart-aside" class="cart-aside">
+      <div class="aside-card">
+        <div class="aside-total-row">
+          <div class="aside-total-label">Total</div>
+          <div class="aside-total-value">{{ cart_total_price_cents|default:0|brl }}</div>
+        </div>
+
+        {% if cart_items_count|default:0|int > 0 %}
+          <a class="btn btn-primary" href="{% url 'checkout' %}">Finalizar pedido</a>
+        {% else %}
+          <a class="btn btn-primary btn-disabled" href="{% url 'catalog' %}">Adicione itens</a>
+        {% endif %}
+
+        <div class="aside-help">
+          A entrega é calculada com base no endereço informado no checkout.
+        </div>
+      </div>
+    </aside>
+  </section>
+{% endblock %}
+
