@@ -23,7 +23,7 @@
           <div class="aside-total-value">{{ cart_total_price_cents|default:0|brl }}</div>
         </div>
 
-        {% if cart_items_count|default:0|int > 0 %}
+        {% if cart_items_count|default:0 > 0 %}
           <a class="btn btn-primary" href="{% url 'checkout' %}">Finalizar pedido</a>
         {% else %}
           <a class="btn btn-primary btn-disabled" href="{% url 'catalog' %}">Adicione itens</a>
